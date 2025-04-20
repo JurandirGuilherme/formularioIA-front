@@ -1,18 +1,18 @@
 import { TableProps } from "antd";
 
-const columns: TableProps['columns'] = [
+export const columns: TableProps['columns'] = [
     {
         title: 'Nome',
         dataIndex:'nome',
         key:'nome'
     },
     {
-        title: 'idade',
+        title: 'Idade',
         dataIndex:'idade',
         key:'idade'
     },
     {
-        title: 'etnia',
+        title: 'Etnia',
         dataIndex:'etnia',
         key:'etnia'
     },
