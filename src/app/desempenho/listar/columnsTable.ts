@@ -16,4 +16,9 @@ export const columns: TableProps['columns'] = [
         dataIndex:'etnia',
         key:'etnia'
     },
+    {
+        title: 'Ação',
+        dataIndex:'etnia',
+        key:'etnia',
+    }
 ]
