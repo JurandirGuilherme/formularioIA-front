@@ -1,13 +1,13 @@
 import { AlunoType } from "../types/AlunoType";
 
-export function treatDataMusic(data: AlunoType[]) {
-  let arr = data.map(({ notaFinal, id, aulaMusica }) => {
-    return { id, notaFinal, aulaMusica };
+export function treatDataAula(data: AlunoType[]) {
+  let arr = data.map(({ notaFinal, id, aulasParticulares }) => {
+    return { id, notaFinal, aulasParticulares };
   });
 
   const ForM = (a: number) => {
-    let data = arr.filter(({ aulaMusica }) => {
-    return aulaMusica == a;
+    let data = arr.filter(({ aulasParticulares }) => {
+    return aulasParticulares == a;
     });
     const countA = data.filter((e) => {
       return e.notaFinal == "A";
@@ -36,7 +36,7 @@ export function treatDataMusic(data: AlunoType[]) {
         C: countC,
         D: countD,
         F: countF,
-        aulaMusica: a == 1 ? "Com aula de música" : "Sem aula de música",
+        aulasParticulares: a == 1 ? "Foi aulasParticulares" : "Não foi aulasParticulares ",
       },
     ];
   }
