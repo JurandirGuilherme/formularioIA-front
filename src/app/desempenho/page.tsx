@@ -2,6 +2,8 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
+
 
 function Desempenho() {
     const router = useRouter();

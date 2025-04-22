@@ -2,19 +2,39 @@
 import desempenho from "@/app/api/desempenho";
 import {
   Button,
-  Checkbox,
   CheckboxOptionType,
   Form,
   Input,
+  InputNumber,
   Radio,
   Select,
+  Tag,
 } from "antd";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import "@ant-design/v5-patch-for-react-19";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import BackButton from "../BackButton";
+import { AlunoType } from "../../types/AlunoType";
 
-function TableForm() {
+function TableForm({
+  alunoId,
+  mode = "create",
+}: {
+  alunoId?: number;
+  mode?: "create" | "edit" | "view";
+}) {
   const [form] = Form.useForm();
+  const [aluno, setAluno] = useState<AlunoType>();
   const router = useRouter();
 
+  useEffect(() => {
+    desempenho.encontrar(alunoId).then((data) => {
+      form.setFieldsValue(data);
+      setAluno(data);
+      console.log(form.getFieldValue("notaFinal"));
+    });
+  }, []);
   const levelFeedback = [
     { value: 0, label: "Nenhum" },
     { value: 1, label: "Baixo" },
@@ -30,8 +50,8 @@ function TableForm() {
     { name: "aulasParticulares", label: "Aulas Particulares" },
     { name: "extraCurriculares", label: "Extras Curriculares" },
     { name: "esportes", label: "Esportes" },
-    { name: "musicas", label: "Músicas" },
-    { name: "volutariado", label: "Voluntariado" },
+    { name: "aulaMusica", label: "Músicas" },
+    { name: "voluntariado", label: "Voluntariado" },
   ];
   const RadioTrueOrFalse = (
     nameItem: string,
@@ -44,24 +64,52 @@ function TableForm() {
       </Form.Item>
     );
   };
-
   const onSubmit = () => {
-    desempenho.criar(form.getFieldsValue())
-    .then(()=>{
-      router.back();
-    })
-    .catch(()=>{
-      console.log('Error')
-    })
+    desempenho
+      .criar(form.getFieldsValue())
+      .then(() => {
+        router.back();
+      })
+      .catch(() => {
+        console.log("Error");
+      });
   };
 
+  const viewMode = () => {
+    return mode == "view";
+  };
+  const chooseColorTag = () => {
+    switch (aluno?.notaFinal) {
+      case "A":
+        return "green";
+      case "B":
+        return "gold";
+      case "C":
+        return "orange";
+      case "D":
+        return "volcano";
+      case "F":
+        return "red";
+      default:
+        return "red";
+    }
+  };
   return (
-      <Form name="formulario" onFinish={onSubmit} form={form}>
+    <div className="flex  items-center flex-col">
+      <div className="w-xl mb-5">
+        <BackButton />
+      </div>
+      <Form
+        name="formulario"
+        onFinish={onSubmit}
+        disabled={viewMode()}
+        form={form}
+      >
         <Form.Item name="nome" label={"Nome"}>
-          <Input />
+          <Input placeholder="Informe a idade" />
         </Form.Item>
         <Form.Item name="idade" label="Idade">
-          <Input type="number" />
+          <InputNumber placeholder="Informe a idade" />
         </Form.Item>
         <Form.Item name="sexo" label="Sexo">
           <Select
@@ -83,8 +131,9 @@ function TableForm() {
             ]}
           />
         </Form.Item>
-        <Form.Item name="educacaoPais" label="Eduação dos Pais">
+        <Form.Item name="educacaoPais" label="Educação dos Pais">
           <Select
+            placeholder="Informe o nível de escolaridade"
             options={[
               { value: 0, label: "Nenhum" },
               { value: 1, label: "Ensino Médio" },
@@ -95,10 +144,18 @@ function TableForm() {
           />
         </Form.Item>
         <Form.Item name="tempoEstudoSemanal" label="Tempo de Estudo Semanal">
-          <Input type="number" maxLength={2} max={20} />
+          <InputNumber
+            maxLength={2}
+            max={20}
+            placeholder="Informe o tempo de estudo semanal"
+          />
         </Form.Item>
         <Form.Item name="faltas" label="Número de Faltas">
-          <Input type="number" maxLength={2} max={30} />
+          <InputNumber
+            maxLength={2}
+            max={30}
+            placeholder="Informe o numero de faltas"
+          />
         </Form.Item>
         <Form.Item name="apoioPais" label="Apoio dos Pais">
           <Radio.Group options={levelFeedback} />
@@ -106,12 +163,32 @@ function TableForm() {
         {askWithTrueOrFalse.map(({ name, label }) =>
           RadioTrueOrFalse(name, label, radioTrueorFalseOption)
         )}
-        <Form.Item className="flex flex-row-reverse">
-          <Button htmlType="submit" type="primary">
-            Enviar
-          </Button>
-        </Form.Item>
+
+        {viewMode() ? (
+          <>
+            <Form.Item className="flex justify-center w-full space-y-3">
+                <Tag
+                  style={{height:"15vh", width: '20vh', fontSize: "40px", display:'flex', alignItems:"center", justifyContent:"center"}}
+                  color={chooseColorTag()}
+                >
+                  <div className="flex justify-center pb-5 items-center flex-col">
+                    <h1 className="text-sm mb-5">Predição da Nota Final</h1>
+                    <h1>{aluno?.notaFinal}</h1>
+                  </div>
+                </Tag>
+            </Form.Item>
+          </>
+        ) : (
+          <>
+            <Form.Item className="flex flex-row-reverse">
+              <Button htmlType="submit" type="primary">
+                Enviar
+              </Button>
+            </Form.Item>
+          </>
+        )}
       </Form>
+    </div>
   );
 }
 

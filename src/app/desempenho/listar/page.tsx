@@ -1,6 +1,6 @@
 "use client";
 import desempenho from "@/app/api/desempenho";
-import TableList from "@/app/tools/TableList";
+import TableList from "@/app/components/TableList";
 import React, { useEffect, useState } from "react";
 import { columns } from "./columnsTable";
 
@@ -9,11 +9,7 @@ function App() {
   useEffect(() => {
     desempenho.listar().then((data) => setAlunos(data));
   }, []);
-  return (
-    <div>
-      <TableList columns={columns} data={alunos} />
-    </div>
-  );
+  return <TableList columns={columns} data={alunos} />;
 }
 
 export default App;
