@@ -1,21 +1,20 @@
-'use client'
+"use client";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { DataGraph } from "@/app/types/dataGraph";
-import { useEffect } from "react";
-import { treatData } from "@/app/service/treatData";
-import { arrayNotas } from "@/app/service/arrayNotas";
 
-export default function BarGraph({ dataGraph }: DataGraph) {
-  console.log(arrayNotas(dataGraph))
+export default function BarGraph({ dataGraph, dataxAxis }: any) {
 
-//   const arr = ['A': {1,2}, 'B', 'C', 'D', 'F']
   return (
     <BarChart
+    dataset={dataGraph}
       series={[
-        ...(arrayNotas(dataGraph))
+        {dataKey:'A', label:'A'},
+        {dataKey:'B', label:'B'},
+        {dataKey:'C', label:'C'},
+        {dataKey:'D', label:'D'},
+        {dataKey:'F', label:'F'},
       ]}
       height={290}
-      xAxis={[{ data: ["Masculino", "Feminino"], scaleType: "band" }]}
+      xAxis={[{ scaleType:'band', dataKey: dataxAxis}]}
     />
   );
 }
